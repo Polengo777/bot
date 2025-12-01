@@ -43,27 +43,6 @@ for (const file of eventFiles) {
     }
 }
 
-// Evento 'ready' para verificar a configuração quando o bot fica online
-client.once(Events.ClientReady, async readyClient => {
-    console.log(`✅ Logado como ${readyClient.user.tag}`);
-
-    // Validação da configuração
-    const guild = readyClient.guilds.cache.first(); // Pega o primeiro servidor em que o bot está
-    if (!guild) {
-        console.error("❌ Erro Crítico: O bot não está em nenhum servidor.");
-        return;
-    }
-
-    console.log(`🔍 Verificando configurações para o servidor: ${guild.name}`);
-
-    const staffRole = await guild.roles.fetch(config.staffRoleId).catch(() => null);
-    if (!staffRole) {
-        console.error(`❌ Erro de Configuração: O 'staffRoleId' (${config.staffRoleId}) é inválido ou o cargo não foi encontrado no servidor '${guild.name}'.`);
-    } else {
-        console.log(`✔️ Cargo de staff ('${staffRole.name}') encontrado com sucesso.`);
-    }
-});
-
 // Handler de interações
 client.on(Events.InteractionCreate, async interaction => {
     // Handler de botões
@@ -77,14 +56,6 @@ client.on(Events.InteractionCreate, async interaction => {
         const command = client.commands.get(interaction.commandName);
         // Se o comando não for encontrado, informa ao usuário.
         if (!command) return interaction.reply({ content: 'Comando não encontrado.', ephemeral: true });
-
-        const adminRoleId = config.staffRoleId; // Usar o staffRoleId do config.json
-        if (command.adminOnly && !interaction.member.roles.cache.has(adminRoleId)) {
-            return interaction.reply({
-                content: '❌ Você não tem permissão para usar este comando.',
-                ephemeral: true
-            });
-        }
 
         try {
             await command.execute(interaction);
