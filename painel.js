@@ -1,13 +1,14 @@
 
-const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, PermissionFlagsBits } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('painel')
-        .setDescription('Envia o painel de tickets no canal atual'),
+        .setDescription('Envia o painel de tickets no canal atual')
+        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator), // Restringe o uso a administradores
     
     async execute(interaction) {
-        // Verifica se o usuário tem permissão de administrador
+        // A verificação de permissão agora é feita pelo Discord antes mesmo do comando rodar.
         if (!interaction.member.permissions.has('Administrator')) {
             return interaction.reply({ 
                 content: '❌ Você não tem permissão para usar este comando!', 
